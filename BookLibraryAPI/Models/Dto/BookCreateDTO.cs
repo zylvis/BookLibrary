@@ -12,6 +12,10 @@ namespace BookLibraryAPI.Models.Dto
         public double ISBN { get; set; }
         [Required]
         public int Year { get; set; }
-        public int Quantity { get; set; }
+        public string Publisher { get; set; }
+        public string Genre { get; set; }
+
+        public bool AvailableStatus { get; set; }
+
     }
 }
