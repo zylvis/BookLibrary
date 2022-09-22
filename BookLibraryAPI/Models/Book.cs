@@ -14,11 +14,10 @@ namespace BookLibraryAPI.Models
         public int Year { get; set; }
         public string Publisher { get; set; }
         public string Genre { get; set; }
-
         public bool AvailableStatus { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime UpdatedDate { get; set; }
-
+        public string SearchColumn { get; set; }
 
     }
 }

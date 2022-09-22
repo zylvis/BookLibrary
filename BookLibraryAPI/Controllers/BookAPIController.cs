@@ -48,6 +48,27 @@ namespace BookLibraryAPI.Controllers
             return _response;
         }
 
+
+        [HttpGet("/book/{search}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<APIResponse>> SearchBooks(string search)
+        {
+            try
+            {
+                _logger.LogInformation("Getting All books");
+                IEnumerable<Book> bookList = await _dbBook.GetAllAsync(x => x.SearchColumn.Contains(search));
+                _response.Result = _mapper.Map<List<BookDTO>>(bookList);
+                _response.StatusCode = HttpStatusCode.OK;
+                return Ok(_response);
+            }
+            catch (Exception ex)
+            {
+                _response.IsSuccess = false;
+                _response.ErrorMesseges = new List<string> { ex.ToString() };
+            }
+            return _response;
+        }
+
         [HttpGet("{id:int}", Name = "GetBook")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -82,6 +103,7 @@ namespace BookLibraryAPI.Controllers
             }
             return _response;
         }
+
 
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
