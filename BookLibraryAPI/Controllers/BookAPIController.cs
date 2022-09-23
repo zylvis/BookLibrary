@@ -3,13 +3,14 @@ using BookLibraryAPI.Data;
 using BookLibraryAPI.Models;
 using BookLibraryAPI.Models.Dto;
 using BookLibraryAPI.Repository.IRepository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
 
 namespace BookLibraryAPI.Controllers
-{
+{  
     [Route("api/BookAPI")]
     [ApiController]
     public class BookAPIController : ControllerBase
@@ -27,9 +28,10 @@ namespace BookLibraryAPI.Controllers
             this._response = new();
 
         }
-
+      
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [Authorize(Roles = "admin, customer")]
         public async Task<ActionResult<APIResponse>> GetBooks()
         {
             try
