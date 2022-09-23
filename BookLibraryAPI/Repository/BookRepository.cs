@@ -53,7 +53,7 @@ namespace BookLibraryAPI.Repository
 
         public async Task CreateAsync(Book entity)
         {
-            entity.SearchColumn = entity.Author + entity.Publisher + entity.ISBN + entity.Year + entity.Genre + entity.AvailableStatus;
+            entity.SearchColumn = $"{entity.Author}{entity.Title}{entity.Publisher}{entity.ISBN}{entity.Year}{entity.Genre}{entity.AvailableStatus}".ToLower();
             entity.CreatedDate = DateTime.Now;
             entity.UpdatedDate = DateTime.Now;
             entity.AvailableStatus = true;
@@ -63,7 +63,7 @@ namespace BookLibraryAPI.Repository
 
         public async Task<Book> UpdateAsync(Book entity)
         {
-            entity.SearchColumn = entity.Author + entity.Publisher + entity.ISBN + entity.Year + entity.Genre + entity.AvailableStatus;
+            entity.SearchColumn = $"{entity.Author}{entity.Title}{entity.Publisher}{entity.ISBN}{entity.Year}{entity.Genre}{entity.AvailableStatus}".ToLower();
             entity.UpdatedDate = DateTime.Now;
             _db.Books.Update(entity);
             await _db.SaveChangesAsync();

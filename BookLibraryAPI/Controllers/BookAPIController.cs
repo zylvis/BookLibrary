@@ -56,7 +56,7 @@ namespace BookLibraryAPI.Controllers
             try
             {
                 _logger.LogInformation("Getting All books");
-                IEnumerable<Book> bookList = await _dbBook.GetAllAsync(x => x.SearchColumn.Contains(search));
+                IEnumerable<Book> bookList = await _dbBook.GetAllAsync(x => x.SearchColumn.Contains(search.ToLower()));
                 _response.Result = _mapper.Map<List<BookDTO>>(bookList);
                 _response.StatusCode = HttpStatusCode.OK;
                 return Ok(_response);
