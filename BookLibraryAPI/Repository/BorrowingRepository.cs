@@ -45,6 +45,7 @@ namespace BookLibraryAPI.Repository
         public async Task CreateAsync(Borrowing entity)
         {
             Book book = await _db.Books.FirstOrDefaultAsync(x => x.Id == entity.BookID);
+
             book.AvailableStatus = SD.Unavailable;
             _db.Books.Update(book);
 

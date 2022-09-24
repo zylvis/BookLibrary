@@ -15,6 +15,7 @@ namespace BookLibraryAPI.Models
         public string Publisher { get; set; }
         public string Genre { get; set; }
         public string AvailableStatus { get; set; }
+        public bool Reserved { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime UpdatedDate { get; set; }
         public string SearchColumn { get; set; }

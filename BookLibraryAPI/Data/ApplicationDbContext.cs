@@ -13,6 +13,7 @@ namespace BookLibraryAPI.Data
         public DbSet<ApplicationUser> ApplicationUsers { get; set; }
         public DbSet<Book> Books { get; set; }
         public DbSet<Borrowing> Borrowings { get; set; }
+        public DbSet<Reservation> Reservations { get; set; }    
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
