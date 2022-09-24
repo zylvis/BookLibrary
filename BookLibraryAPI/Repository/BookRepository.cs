@@ -1,6 +1,7 @@
 ﻿using BookLibraryAPI.Data;
 using BookLibraryAPI.Models;
 using BookLibraryAPI.Repository.IRepository;
+using BookLibraryAPI.Utility;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Linq.Expressions;
@@ -56,7 +57,7 @@ namespace BookLibraryAPI.Repository
             entity.SearchColumn = $"{entity.Author}{entity.Title}{entity.Publisher}{entity.ISBN}{entity.Year}{entity.Genre}{entity.AvailableStatus}".ToLower();
             entity.CreatedDate = DateTime.Now;
             entity.UpdatedDate = DateTime.Now;
-            entity.AvailableStatus = true;
+            entity.AvailableStatus = SD.Available;
             await _db.Books.AddAsync(entity);
             await SaveAsync();
         }

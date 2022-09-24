@@ -31,7 +31,7 @@ namespace BookLibraryAPI.Controllers
       
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [Authorize(Roles = "admin, customer")]
+        //[Authorize(Roles = "admin, customer")]
         public async Task<ActionResult<APIResponse>> GetBooks()
         {
             try
@@ -53,6 +53,7 @@ namespace BookLibraryAPI.Controllers
 
         [HttpGet("/book/{search}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        //[Authorize(Roles = "admin, customer")]
         public async Task<ActionResult<APIResponse>> SearchBooks(string search)
         {
             try
@@ -75,7 +76,7 @@ namespace BookLibraryAPI.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-
+        //[Authorize(Roles = "admin, customer")]
         public async Task<ActionResult<APIResponse>> GetBook(int id)
         {
             try
@@ -106,12 +107,11 @@ namespace BookLibraryAPI.Controllers
             return _response;
         }
 
-
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-
+        //[Authorize(Roles = "admin")]
         public async Task<ActionResult<APIResponse>> CreateBook([FromBody] BookCreateDTO createDTO)
         {
             try
@@ -144,7 +144,7 @@ namespace BookLibraryAPI.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-
+        //[Authorize(Roles = "admin")]
         [HttpDelete("{id:int}", Name = "DeleteBook")]
         public async Task<ActionResult<APIResponse>> DeleteBook(int id)
         {
@@ -178,6 +178,7 @@ namespace BookLibraryAPI.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpPut("{id:int}", Name = "UpdateBook")]
+        //[Authorize(Roles = "admin")]
         public async Task<ActionResult<APIResponse>> UpdateBook(int id, [FromBody] BookUpdateDTO updateDTO)
         {
             try
@@ -202,7 +203,5 @@ namespace BookLibraryAPI.Controllers
             }
             return _response;
         }
-
-
     }
 }
