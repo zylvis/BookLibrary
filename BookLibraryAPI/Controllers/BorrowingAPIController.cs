@@ -16,12 +16,14 @@ namespace BookLibraryAPI.Controllers
         private ILogger<BorrowingAPIController> _logger;
         private readonly IBorrowingRepository _dbBorrowing;
         private readonly IBookRepository _dbBook;
+        private readonly IReservationRepository _dbReservation;
         private readonly IMapper _mapper;
 
-        public BorrowingAPIController(IBorrowingRepository dbBorrowing, IBookRepository dbBook, ILogger<BorrowingAPIController> logger, IMapper mapper)
+        public BorrowingAPIController(IBorrowingRepository dbBorrowing, IBookRepository dbBook, IReservationRepository dbReservation, ILogger<BorrowingAPIController> logger, IMapper mapper)
         {
             _dbBorrowing = dbBorrowing;
             _dbBook = dbBook;
+            _dbReservation = dbReservation;
             _logger = logger;
             _mapper = mapper;
             this._response = new();
@@ -100,11 +102,20 @@ namespace BookLibraryAPI.Controllers
                     ModelState.AddModelError("", "Book already Taken!");
                     return BadRequest(ModelState);
                 }
+
+                bool reserved = await _dbBook.GetAsync(x => x.Id == createDTO.BookID && x.Reserved == true) != null;
+                bool reservedByUser = await _dbReservation.GetAsync(x => x.UserId == createDTO.UserID && x.BookId == createDTO.BookID) == null;
+                if (reserved && reservedByUser)
+                {
+                    ModelState.AddModelError("", "Can't Take, beacause Book is Reserved!");
+                    return BadRequest(ModelState);
+                }
+
                 if (createDTO == null)
                 {
                     return BadRequest(createDTO);
                 }
-
+                
                 Borrowing borrowing = _mapper.Map<Borrowing>(createDTO);
 
                 await _dbBorrowing.CreateAsync(borrowing);
