@@ -44,7 +44,7 @@ namespace BookLibraryAPI.Repository
 
         public async Task CreateAsync(Borrowing entity)
         {
-            Book book = (Book)_db.Books.Where(x => x.Id == entity.BookID);
+            Book book = await _db.Books.FirstOrDefaultAsync(x => x.Id == entity.BookID);
             book.AvailableStatus = SD.Unavailable;
             _db.Books.Update(book);
 
@@ -57,7 +57,7 @@ namespace BookLibraryAPI.Repository
 
         public async Task RemoveAsync(Borrowing entity)
         {
-            Book book = (Book)_db.Books.Where(x => x.Id == entity.BookID);
+            Book book = await _db.Books.FirstOrDefaultAsync(x => x.Id == entity.BookID);
             book.AvailableStatus = SD.Available;
             _db.Books.Update(book);
 
