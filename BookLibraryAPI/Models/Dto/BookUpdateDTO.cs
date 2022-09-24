@@ -17,7 +17,7 @@ namespace BookLibraryAPI.Models.Dto
         [Required]
         public string Publisher { get; set; }
         public string Genre { get; set; }
-        public bool AvailableStatus { get; set; }
+        public string AvailableStatus { get; set; }
 
     }
 }
