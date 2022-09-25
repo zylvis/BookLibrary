@@ -1,6 +1,7 @@
 ﻿using BookLibraryAPI.Data;
 using BookLibraryAPI.Models;
 using BookLibraryAPI.Repository.IRepository;
+using BookLibraryAPI.Utility;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
@@ -16,6 +17,10 @@ namespace BookLibraryAPI.Repository
         }
         public async Task CreateAsync(ReturnRegister entity)
         {
+            Book book = await _db.Books.FirstOrDefaultAsync(x => x.Id == entity.BookId);
+            book.AvailableStatus = SD.Available;
+            _db.Books.Update(book);
+
             entity.Date = DateTime.Now;
             await _db.ReturnRegisters.AddAsync(entity);
             await SaveAsync();
