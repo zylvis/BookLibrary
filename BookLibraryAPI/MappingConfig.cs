@@ -20,7 +20,11 @@ namespace BookLibraryAPI
 
             CreateMap<Reservation, ReservationDTO>().ReverseMap();
             CreateMap<Reservation, ReservationCreateDTO>().ReverseMap();
-           
+
+            CreateMap<ReturnRegister, ReturnRegisterDTO>().ReverseMap();
+            CreateMap<ReturnRegister, ReturnRegisterCreateDTO>().ReverseMap();
+
+
             CreateMap<ApplicationUser, UserDTO>().ReverseMap();
         }
     }

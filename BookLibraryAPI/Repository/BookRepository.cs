@@ -11,17 +11,14 @@ namespace BookLibraryAPI.Repository
     public class BookRepository :  IBookRepository
     {
         private readonly ApplicationDbContext _db;
-        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public BookRepository(ApplicationDbContext db, IHttpContextAccessor httpContextAccessor)
+        public BookRepository(ApplicationDbContext db)
         {
             _db = db;
-            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<List<Book>> GetAllAsync(Expression<Func<Book, bool>>? filter = null)
         {
-            var userName = _httpContextAccessor.HttpContext.User.Identity.Name;
             IQueryable<Book> query = _db.Books;
             if (filter != null)
             {
