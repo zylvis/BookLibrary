@@ -129,7 +129,7 @@ namespace BookLibraryAPI.Controllers
                 Borrowing borrowing = _mapper.Map<Borrowing>(createDTO);
 
                 await _dbBorrowing.CreateAsync(borrowing, user.Id);
-                _response.Result = _mapper.Map<BorrowingCreateDTO>(borrowing);
+                _response.Result = _mapper.Map<Borrowing>(borrowing);
                 _response.StatusCode = HttpStatusCode.Created;
                 return CreatedAtRoute("GetBorrowing", new { id = borrowing.Id }, _response);
             }
