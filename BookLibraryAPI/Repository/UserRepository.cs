@@ -108,7 +108,6 @@ namespace BookLibraryAPI.Repository
                     var userToReturn = _db.ApplicationUsers
                         .FirstOrDefault(u => u.UserName == registerationRequestDTO.UserName);
                     return _mapper.Map<UserDTO>(userToReturn);
-
                 }
             }
             catch (Exception e)

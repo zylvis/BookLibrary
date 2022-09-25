@@ -6,7 +6,6 @@ namespace BookLibraryAPI.Models.Dto
     {
         [Required]
         public int BookID { get; set; }
-        [Required]
-        public string UserID { get; set; }
+
     }
 }

@@ -7,7 +7,7 @@ namespace BookLibraryAPI.Repository.IRepository
     {
         Task<List<Borrowing>> GetAllAsync(Expression<Func<Borrowing, bool>>? filter = null);
         Task<Borrowing> GetAsync(Expression<Func<Borrowing, bool>> filter = null, bool tracked = true);
-        Task CreateAsync(Borrowing entity);
+        Task CreateAsync(Borrowing entity, string userID);
         Task RemoveAsync(Borrowing entity);
         Task SaveAsync();
     }

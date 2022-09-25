@@ -42,8 +42,9 @@ namespace BookLibraryAPI.Repository
         }
 
 
-        public async Task CreateAsync(Borrowing entity)
+        public async Task CreateAsync(Borrowing entity, string userID)
         {
+
             Book book = await _db.Books.FirstOrDefaultAsync(x => x.Id == entity.BookID);
             bool reservedByUser = await _db.Reservations.FirstOrDefaultAsync(x => x.UserId == entity.UserID && x.BookId == entity.BookID) != null;
 
@@ -55,6 +56,7 @@ namespace BookLibraryAPI.Repository
             _db.Books.Update(book);
 
             entity.Date = DateTime.Now;
+            entity.UserID = userID;
             await _db.Borrowings.AddAsync(entity);
 
             await SaveAsync();

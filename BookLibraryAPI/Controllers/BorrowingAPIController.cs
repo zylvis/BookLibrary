@@ -3,6 +3,8 @@ using BookLibraryAPI.Models;
 using BookLibraryAPI.Models.Dto;
 using BookLibraryAPI.Repository.IRepository;
 using BookLibraryAPI.Utility;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -18,8 +20,12 @@ namespace BookLibraryAPI.Controllers
         private readonly IBookRepository _dbBook;
         private readonly IReservationRepository _dbReservation;
         private readonly IMapper _mapper;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public BorrowingAPIController(IBorrowingRepository dbBorrowing, IBookRepository dbBook, IReservationRepository dbReservation, ILogger<BorrowingAPIController> logger, IMapper mapper)
+        public BorrowingAPIController(IBorrowingRepository dbBorrowing, IBookRepository dbBook, IReservationRepository dbReservation,
+                                    ILogger<BorrowingAPIController> logger,IMapper mapper, IHttpContextAccessor httpContextAccessor,
+                                    UserManager<ApplicationUser> userManager)
         {
             _dbBorrowing = dbBorrowing;
             _dbBook = dbBook;
@@ -27,12 +33,13 @@ namespace BookLibraryAPI.Controllers
             _logger = logger;
             _mapper = mapper;
             this._response = new();
-
+            _httpContextAccessor = httpContextAccessor;
+            _userManager = userManager;
         }
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        //[Authorize(Roles = "admin, customer")]
+        [Authorize(Roles = "admin, customer")]
         public async Task<ActionResult<APIResponse>> GetBorrowings()
         {
             try
@@ -56,7 +63,7 @@ namespace BookLibraryAPI.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        //[Authorize(Roles = "admin, customer")]
+        [Authorize(Roles = "admin, customer")]
         public async Task<ActionResult<APIResponse>> GetBorrowing(int id)
         {
             try
@@ -91,7 +98,7 @@ namespace BookLibraryAPI.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        //[Authorize(Roles = "admin")]
+        [Authorize(Roles = "admin, customer")]
         public async Task<ActionResult<APIResponse>> CreateBorrowing([FromBody] BorrowingCreateDTO createDTO)
         {
             try
@@ -103,8 +110,11 @@ namespace BookLibraryAPI.Controllers
                     return BadRequest(ModelState);
                 }
 
+                string userName = _httpContextAccessor.HttpContext.User.Identity.Name;
+                var user = await _userManager.FindByEmailAsync(userName);
+
                 bool reserved = await _dbBook.GetAsync(x => x.Id == createDTO.BookID && x.Reserved == true) != null;
-                bool reservedByUser = await _dbReservation.GetAsync(x => x.UserId == createDTO.UserID && x.BookId == createDTO.BookID) == null;
+                bool reservedByUser = await _dbReservation.GetAsync(x => x.UserId == user.Id && x.BookId == createDTO.BookID) == null;
                 if (reserved && reservedByUser)
                 {
                     ModelState.AddModelError("", "Can't Take, beacause Book is Reserved!");
@@ -118,7 +128,7 @@ namespace BookLibraryAPI.Controllers
                 
                 Borrowing borrowing = _mapper.Map<Borrowing>(createDTO);
 
-                await _dbBorrowing.CreateAsync(borrowing);
+                await _dbBorrowing.CreateAsync(borrowing, user.Id);
                 _response.Result = _mapper.Map<BorrowingCreateDTO>(borrowing);
                 _response.StatusCode = HttpStatusCode.Created;
                 return CreatedAtRoute("GetBorrowing", new { id = borrowing.Id }, _response);
@@ -134,7 +144,7 @@ namespace BookLibraryAPI.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        //[Authorize(Roles = "admin")]
+        [Authorize(Roles = "admin")]
         [HttpDelete("{id:int}", Name = "DeleteBorrowing")]
         public async Task<ActionResult<APIResponse>> DeleteBorrowing(int id)
         {

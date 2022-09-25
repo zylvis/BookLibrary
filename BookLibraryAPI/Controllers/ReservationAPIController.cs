@@ -6,6 +6,7 @@ using BookLibraryAPI.Utility;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using System.Security.Claims;
 
 namespace BookLibraryAPI.Controllers
 {
