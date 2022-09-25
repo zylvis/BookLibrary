@@ -2,6 +2,7 @@
 using BookLibraryAPI.Models;
 using BookLibraryAPI.Repository.IRepository;
 using BookLibraryAPI.Utility;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
@@ -14,15 +15,16 @@ namespace BookLibraryAPI.Repository
         public ReservationRepository(ApplicationDbContext db)
         {
             _db = db;
-        }
-        public async Task CreateAsync(Reservation entity)
-        {
 
+        }
+        public async Task CreateAsync(Reservation entity, string userId)
+        {
             Book book = await _db.Books.FirstOrDefaultAsync(x => x.Id == entity.BookId);
             book.Reserved = true;
             _db.Books.Update(book);
 
             entity.Date = DateTime.Now;
+            entity.UserId = userId;
             await _db.Reservations.AddAsync(entity);
 
             await SaveAsync();
