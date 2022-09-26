@@ -6,7 +6,7 @@ namespace BookLibraryAPI.Models
     {
         public HttpStatusCode StatusCode {get; set;}
         public bool IsSuccess { get; set; } = true;
-        public List<string> ErrorMesseges { get; set;}
+        public List<string> ErrorMesseges { get; set;} = new List<string>();
         public object Result { get; set;}
      
     }

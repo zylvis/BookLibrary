@@ -15,7 +15,7 @@ namespace BookLibraryAPI.Controllers
         public UsersController(IUserRepository userRepo)
         {
             _userRepo = userRepo;
-            _response = new();
+            _response =  new APIResponse();
         }
 
         [HttpPost("login")]
