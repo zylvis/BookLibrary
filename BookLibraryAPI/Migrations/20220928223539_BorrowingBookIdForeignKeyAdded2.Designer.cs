@@ -4,6 +4,7 @@ using BookLibraryAPI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BookLibraryAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220928223539_BorrowingBookIdForeignKeyAdded2")]
+    partial class BorrowingBookIdForeignKeyAdded2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -188,8 +190,6 @@ namespace BookLibraryAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("BookId");
-
                     b.ToTable("Reservations");
                 });
 
@@ -354,17 +354,6 @@ namespace BookLibraryAPI.Migrations
                     b.HasOne("BookLibraryAPI.Models.Book", "Book")
                         .WithMany()
                         .HasForeignKey("BookID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Book");
-                });
-
-            modelBuilder.Entity("BookLibraryAPI.Models.Reservation", b =>
-                {
-                    b.HasOne("BookLibraryAPI.Models.Book", "Book")
-                        .WithMany()
-                        .HasForeignKey("BookId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
