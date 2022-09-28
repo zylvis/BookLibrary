@@ -55,13 +55,21 @@ namespace BookLibraryAPI.Controllers
         [HttpGet("/book/{search}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [Authorize(Roles = "admin, customer")]
-        public async Task<ActionResult<APIResponse>> SearchBooks(string search)
+        public async Task<ActionResult<APIResponse>> SearchBooks(string? search)
         {
             try
             {
+                if(search == "search")
+                {
+                    _logger.LogInformation("Getting All books");
+                    IEnumerable<Book> bookList = await _dbBook.GetAllAsync();
+                    _response.Result = _mapper.Map<List<BookDTO>>(bookList);
+                    _response.StatusCode = HttpStatusCode.OK;
+                    return Ok(_response);
+                }
                 _logger.LogInformation("Getting All books");
-                IEnumerable<Book> bookList = await _dbBook.GetAllAsync(x => x.SearchColumn.Contains(search.ToLower()));
-                _response.Result = _mapper.Map<List<BookDTO>>(bookList);
+                IEnumerable<Book> filterBookList = await _dbBook.GetAllAsync(x => x.SearchColumn.Contains(search.ToLower()));
+                _response.Result = _mapper.Map<List<BookDTO>>(filterBookList);
                 _response.StatusCode = HttpStatusCode.OK;
                 return Ok(_response);
             }

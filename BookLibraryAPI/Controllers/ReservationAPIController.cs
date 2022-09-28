@@ -110,19 +110,19 @@ namespace BookLibraryAPI.Controllers
                 bool reserved = await _dbBook.GetAsync(x => x.Id == createDTO.BookId && x.Reserved == true) != null;
                 if (reserved)
                 {
-                    ModelState.AddModelError("", "Book already Reserved");
+                    ModelState.AddModelError("Message", "Book already Reserved");
                     return BadRequest(ModelState);
                 }
                 bool available = await _dbBook.GetAsync(x => x.Id == createDTO.BookId && x.AvailableStatus == SD.Available) != null;
                 if (available)
                 {
-                    ModelState.AddModelError("", "Can't reserve, because Book is available");
+                    ModelState.AddModelError("Message", "Can't reserve, because Book is available");
                     return BadRequest(ModelState);
                 }
                 bool takenByUser = await _dbBorrowing.GetAsync(x => x.BookID == createDTO.BookId && x.UserID == user.Id) != null;
                 if (!available && takenByUser)
                 {
-                    ModelState.AddModelError("", "Can't reserve, because Book is taken by You");
+                    ModelState.AddModelError("Message", "Can't reserve, because Book is taken by You");
                     return BadRequest(ModelState);
                 }
 
