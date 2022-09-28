@@ -13,7 +13,7 @@ namespace BookLibraryAPI.Repository
 
         public BorrowingRepository(ApplicationDbContext db)
         {
-            _db = db;
+            _db = db; 
         }
 
         public async Task<List<Borrowing>> GetAllAsync(Expression<Func<Borrowing, bool>>? filter = null)
@@ -46,12 +46,16 @@ namespace BookLibraryAPI.Repository
         {
 
             Book book = await _db.Books.FirstOrDefaultAsync(x => x.Id == entity.BookID);
+            bool bookReserved = book.Reserved;
             bool reservedByUser = await _db.Reservations.FirstOrDefaultAsync(x => x.UserId == entity.UserID && x.BookId == entity.BookID) != null;
 
-            if (reservedByUser)
+            Reservation reservation = await _db.Reservations.FirstOrDefaultAsync(x => x.BookId == entity.BookID);
+            if (reservation != null)
             {
-                book.Reserved = false;
+                _db.Reservations.Remove(reservation);
             }
+
+            book.Reserved = false;
             book.AvailableStatus = SD.Unavailable;
             _db.Books.Update(book);
 

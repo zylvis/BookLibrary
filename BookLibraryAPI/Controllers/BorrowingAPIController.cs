@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using System.Text.Json;
 
 namespace BookLibraryAPI.Controllers
 {
@@ -46,7 +47,15 @@ namespace BookLibraryAPI.Controllers
             {
                 _logger.LogInformation("Getting All borrowings");
                 IEnumerable<Borrowing> borrowingList = await _dbBorrowing.GetAllAsync();
-                _response.Result = _mapper.Map<List<BorrowingDTO>>(borrowingList);
+                IEnumerable<ApplicationUser> userList = _userManager.Users;
+
+                var query = (from b in borrowingList
+                             join u in userList
+                                 on b.UserID equals u.Id
+                             select new { b.Id, b.UserID, b.BookID, b.Date, u.Name }).ToList();
+
+               
+                _response.Result = query;
                 _response.StatusCode = HttpStatusCode.OK;
                 return Ok(_response);
             }
@@ -106,7 +115,7 @@ namespace BookLibraryAPI.Controllers
                 bool unavailable = await _dbBook.GetAsync(x => x.Id == createDTO.BookID && x.AvailableStatus == SD.Unavailable) != null;
                 if (unavailable)
                 {
-                    ModelState.AddModelError("", "Book already Taken!");
+                    ModelState.AddModelError("Message", "Book already Taken!");
                     return BadRequest(ModelState);
                 }
 
@@ -117,7 +126,7 @@ namespace BookLibraryAPI.Controllers
                 bool reservedByUser = await _dbReservation.GetAsync(x => x.UserId == user.Id && x.BookId == createDTO.BookID) == null;
                 if (reserved && reservedByUser)
                 {
-                    ModelState.AddModelError("", "Can't Take, beacause Book is Reserved!");
+                    ModelState.AddModelError("Message", "Can't Take, beacause Book is Reserved!");
                     return BadRequest(ModelState);
                 }
 

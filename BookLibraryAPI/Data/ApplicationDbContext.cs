@@ -16,9 +16,11 @@ namespace BookLibraryAPI.Data
         public DbSet<Reservation> Reservations { get; set; }
         public DbSet<ReturnRegister> ReturnRegisters { get; set; }
 
+   
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(modelBuilder);
+             base.OnModelCreating(modelBuilder);
         }
     }
 }
