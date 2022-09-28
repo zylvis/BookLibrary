@@ -4,6 +4,7 @@ using BookLibraryAPI.Models.Dto;
 using BookLibraryAPI.Repository.IRepository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -17,12 +18,14 @@ namespace BookLibraryAPI.Controllers
         protected APIResponse _response;
         private ILogger<ReturnRegisterAPIController> _logger;
         private readonly IReturnRegisterRepository _dbReturnRegister;
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly IMapper _mapper;
 
         public ReturnRegisterAPIController(IReturnRegisterRepository dbReturnRegister, ILogger<ReturnRegisterAPIController> logger,
-                                            IMapper mapper)
+                                            UserManager<ApplicationUser> userManager, IMapper mapper)
         {
             _dbReturnRegister = dbReturnRegister;
+            _userManager = userManager;
             _logger = logger;
             _mapper = mapper;
             this._response = new();
@@ -36,7 +39,14 @@ namespace BookLibraryAPI.Controllers
             {
                 _logger.LogInformation("Getting All ReturnRegisters");
                 IEnumerable<ReturnRegister> returnRegisterList = await _dbReturnRegister.GetAllAsync();
-                _response.Result = _mapper.Map<List<ReturnRegisterDTO>>(returnRegisterList);
+                IEnumerable<ApplicationUser> userList = _userManager.Users;
+
+                var query = (from r in returnRegisterList
+                             from u in userList.Where(i => i.Id == r.UserId).DefaultIfEmpty()
+                             select new { r.Id, r.UserId, r.BookId, r.Date, u.Name, u.UserName}).ToList();
+
+                //_response.Result = _mapper.Map<List<ReturnRegisterDTO>>(returnRegisterList);
+                _response.Result = query;
                 _response.StatusCode = HttpStatusCode.OK;
                 return Ok(_response);
             }
