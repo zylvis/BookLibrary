@@ -59,7 +59,7 @@ namespace BookLibraryAPI.Controllers
         {
             try
             {
-                if(search == "search")
+                if(search == "9search9")
                 {
                     _logger.LogInformation("Getting All books");
                     IEnumerable<Book> bookList = await _dbBook.GetAllAsync();
