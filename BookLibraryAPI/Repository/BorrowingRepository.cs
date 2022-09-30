@@ -26,7 +26,6 @@ namespace BookLibraryAPI.Repository
             return await query.ToListAsync();
         }
 
-
         public async Task<Borrowing> GetAsync(Expression<Func<Borrowing, bool>> filter = null, bool tracked = true)
         {
             IQueryable<Borrowing> query = _db.Borrowings;
@@ -40,7 +39,6 @@ namespace BookLibraryAPI.Repository
             }
             return await query.FirstOrDefaultAsync();
         }
-
 
         public async Task CreateAsync(Borrowing entity, string userID)
         {
@@ -65,7 +63,6 @@ namespace BookLibraryAPI.Repository
 
             await SaveAsync();
         }
-
 
         public async Task RemoveAsync(Borrowing entity)
         {

@@ -51,7 +51,6 @@ namespace BookLibraryAPI.Repository
             return await query.FirstOrDefaultAsync();
         }
 
-
         public async Task CreateAsync(Book entity)
         {
             entity.SearchColumn = $"{entity.Author}{entity.Title}{entity.Publisher}{entity.ISBN}{entity.Year}{entity.Genre}{entity.AvailableStatus}".ToLower();
@@ -70,8 +69,6 @@ namespace BookLibraryAPI.Repository
             await _db.SaveChangesAsync();
             return entity;
         }
-
-
 
         public async Task RemoveAsync(Book entity)
         {
